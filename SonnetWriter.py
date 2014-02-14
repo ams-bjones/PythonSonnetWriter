@@ -1,76 +1,41 @@
-import re
 
-from Word import Word
+
+from Word import WordChain
 
 # Analyzes a sample of writing, generates a probabilistic model of which words frequently occur together
 # 	and writes it's own text based on that model. Hopefully, hilarity will insue
 class SonnetWriter(object):
     def __init__(self):
-        # When choosing probabilistic next word, select randomly out of the top rankCutoff options
-        self.rankCutoff = 40
-
         # Desired length of sonnet, in words
         self.desiredLength = 10
         self.desiredLines = 14
+        self.wordChain = None
 
-        self.sonnetFile = "sonnets.txt"
-        self.theirSonnet = ""
-
-        self.words = {}
-
-        # List of all the words found
-        self.model = {}
-
+    def Initialize(self, sonnetFile):
         self.mySonnet = []
-
-
-    def Initialize(self):
-        self.theirSonnet = ""
-        for line in open(self.sonnetFile, "r"):
-            if len(line) > 0:
-                self.theirSonnet += line.lower() + " @ "
-
-        self.words = {}
-        self.mySonnet = []
+        self.wordChain = None
+        self.sonnetFile = sonnetFile
 
     def AnalyzeText(self):
-        # Split the sonnet into separate words
-        previousWord = ""
-        for word in re.findall(r"[\w'@]+", self.theirSonnet):
-            if previousWord != "":
-                self.AddWordWithFollower(previousWord, word)
-            previousWord = word
-
-    def AddWordWithFollower(self, word, follower):
-        if word in self.words:
-            self.words[word].AddFollower(follower)
-        else:
-            thisWord = Word(word)
-            thisWord.AddFollower(follower)
-            self.words[word] = thisWord
+        self.wordChain = WordChain(self.sonnetFile)
+        self.wordChain.AnalyzeText()
 
     def WriteSonnet(self):
         for i in range(self.desiredLines):
             line = []
             previousWord = "@"
             for j in range(self.desiredLength) or previousWord != "@":
-                nextWord = self.GetRandomFollower(previousWord)
+                nextWord = self.wordChain.GetRandomFollower(previousWord)
                 for k in range(1, 5):
                     if nextWord != "@":
                         break
-                    nextWord = self.GetRandomFollower(previousWord)
+                    nextWord = self.wordChain.GetRandomFollower(previousWord)
                 if nextWord == "@":
                     break
                 line.append(nextWord)
                 previousWord = nextWord
             self.mySonnet.append(line)
 
-    def GetRandomFollower(self, word):
-        if word in self.words:
-            return self.words[word].GetRandomFollower()
-        else:
-            return "@"
-            
     def Print(self, printLineNum=False):
         for (numLine, line) in enumerate(self.mySonnet):
             if (printLineNum):
@@ -89,7 +54,7 @@ class SonnetWriter(object):
 if __name__ == '__main__':
     writer = SonnetWriter()
     print "Initializing..."
-    writer.Initialize()
+    writer.Initialize("Sonnets.txt")
     print "Initialized"
     print 
     print "Analyzing..."

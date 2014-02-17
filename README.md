@@ -17,7 +17,9 @@ Thanks for [Kash's Post](http://kashthealien.wordpress.com/2013/06/15/213/) to g
 
 To install NLTK:
 
+```
 pip install pyyaml nltk
+```
 
 To download NLTK data:
 
@@ -31,7 +33,23 @@ The data is huge. However, you only need corpus -> cmudict for this app.
 Usage
 =====
 
-python SonnetWriter.py
+
+```
+python WriteSonnet.py
+```
+
+In Program:
+
+```
+from SonnetWriter import SonnetWriter
+
+writer = SonnetWriter()
+writer.Initialize("Sonnets.txt")
+writer.AnalyzeText()
+writer.WriteSonnet()
+writer.Print()
+
+```
 
 Sample
 ======

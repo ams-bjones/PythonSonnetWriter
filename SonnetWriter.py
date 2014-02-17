@@ -1,6 +1,5 @@
-
-
-from Word import WordChain
+import sys
+from Word import WordChain, Word
 
 # Analyzes a sample of writing, generates a probabilistic model of which words frequently occur together
 # 	and writes it's own text based on that model. Hopefully, hilarity will insue
@@ -10,11 +9,13 @@ class SonnetWriter(object):
         self.desiredLength = 10
         self.desiredLines = 14
         self.wordChain = None
+        self.rhymeLevel = 2
 
     def Initialize(self, sonnetFile):
         self.mySonnet = []
         self.wordChain = None
         self.sonnetFile = sonnetFile
+        self.rhymeLines = [-1, -1, 0, 1, -1, -1, 4, 5, -1, -1, 8, 9, -1, 12]
 
     def AnalyzeText(self):
         self.wordChain = WordChain(self.sonnetFile)
@@ -23,34 +24,54 @@ class SonnetWriter(object):
     def WriteSonnet(self):
         for i in range(self.desiredLines):
             line = []
-            previousWord = "@"
-            for j in range(self.desiredLength) or previousWord != "@":
-                nextWord = self.wordChain.GetRandomFollower(previousWord)
+            followingWord = Word("@")
+            
+            syllables = 0
+
+            if (self.rhymeLines[i] >= 0):
+                followingWord = self.wordChain.GetRhymingWord(self.mySonnet[self.rhymeLines[i]][-1], self.rhymeLevel)
+                line.insert(0, followingWord.GetWord())
+                syllables += followingWord.CountSyllables()
+            
+            while syllables < self.desiredLength:
+                nextWord = self.wordChain.GetRandomLeader(followingWord.GetWord())
                 for k in range(1, 5):
-                    if nextWord != "@":
+                    if nextWord.GetWord() != "@":
                         break
-                    nextWord = self.wordChain.GetRandomFollower(previousWord)
-                if nextWord == "@":
+                    nextWord = self.wordChain.GetRandomLeader(followingWord.GetWord())
+                if nextWord.GetWord() == "@":
                     break
-                line.append(nextWord)
-                previousWord = nextWord
+                line.insert(0, nextWord.GetWord())
+                followingWord = nextWord
+                followingWord.GetWordStress()
+                syllables += nextWord.CountSyllables()
+                
+                self.PrintProgress(i+1, syllables)
+                
             self.mySonnet.append(line)
 
-    def Print(self, printLineNum=False):
+    def PrintProgress(self, line, syllable):
+        sys.stdout.write ("\rGenerating line [{}] syllable [{}]  ".format(line, syllable))
+        
+    def GetPrintableSonnet(self, startOfLine="", startOfWord="{1} ", endOfLine="\n"):
+        sonnetStr = ""
         for (numLine, line) in enumerate(self.mySonnet):
-            if (printLineNum):
-                lineStr = "[{}]: ".format(numLine + 1)
-            else:
-                lineStr = ""
+            lineStr = startOfLine.format(numLine + 1)
                 
             for (numWord, word) in enumerate(line):
-                if (printLineNum):
-                    lineStr += "({}){} ".format(numWord, word)
-                else:
-                    lineStr += "{} ".format(word)
+                lineStr += startOfWord.format(numWord, word)
                     
-            print (lineStr)
+            lineStr += endOfLine
+            sonnetStr += lineStr.capitalize()
+            
+        return sonnetStr
 
+    def Print(self, printLineNum=False):
+        if (printLineNum):
+            print(self.GetPrintableSonnet("[{}]: ", "({}){} ", "\n"))
+        else:
+            print(self.GetPrintableSonnet())
+        
 if __name__ == '__main__':
     writer = SonnetWriter()
     print "Initializing..."
@@ -63,9 +84,11 @@ if __name__ == '__main__':
     print 
     print "Generating..."
     writer.WriteSonnet()
-    print "Generated"
+    print "\nGenerated"
     print 
     print "My magnum opus: "
     print 
-    writer.Print()
+    writer.Print(True)
+    writer.Print(False)
+    print(writer.GetPrintableSonnet("", "{1} ", "</ br>\n"))
 

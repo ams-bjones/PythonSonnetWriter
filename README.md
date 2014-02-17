@@ -10,7 +10,7 @@ A [sonnet](http://en.wikipedia.org/wiki/Sonnet) is a poem, but not only a poem. 
 Requirements
 ============
 
-NLTK - Not needed for current version. For furture versions (not sure which one though) only.
+NLTK
 ----
 
 Thanks for [Kash's Post](http://kashthealien.wordpress.com/2013/06/15/213/) to get a list of rhyming words.
@@ -21,8 +21,10 @@ pip install pyyaml nltk
 
 To download NLTK data:
 
->>> import nltk
->>> nltk.download()
+```
+>>>import nltk
+>>>nltk.download()
+```
 
 The data is huge. However, you only need corpus -> cmudict for this app.
 
@@ -34,20 +36,31 @@ python SonnetWriter.py
 Sample
 ======
 
-flatter the times more by succession thine outward form of
-perforce am mortgaged to my brain and let those dancing
-describe adonis and child and me a dream doth nature
-than both from heat still lives a noted yet then
-doing thee hold me thus mine eyes belongs to time
-revenge upon deceased i assure ye
-'tis with his compeers by advis'd respects
-music music music to eat up to whom frown'st thou
-drink up the truth proves thievish for no ill report
-hath mask'd him here live unwoo'd and such matter that
-weeds among weeds among the even in so will drink
-die i condemned for still will bitter think that still
-darkening thy spirit is abused
-points on high as truth proves thievish progress to times
+```
+Eyes corrupt by this wide world doth deceive
+Still to his living record of birds sang
+Mortal moon and lusty days should achieve
+Me blind soul which by my flame should do hang
+No precious time at grievances foregone
+Of miles when first i fortune once asleep
+See others write for thee doth it live drawn
+Myself i'll forfeit so dumb thoughts sold cheap
+Come hindmost holds her wish would i whilst thou spend
+The hours have frequent been with my chest
+I journey in hideous winter and
+Leave to kiss the waves make thy side against
+Wilt for blunting the clock that ink my stain
+Art all their verdict is from home again
+```
+
+Tasks
+=====
+
+- [ ] Write verses in iambic pentameter.
+- [ ] Use second level dictionary.
+- [ ] Enhance process to choose words from dictionary.
+- [ ] Support more Sonnet styles.
+- [ ] Performence improvement.
 
 License
 =======

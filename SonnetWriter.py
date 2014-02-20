@@ -22,6 +22,7 @@ class SonnetWriter(object):
         self.wordChain.AnalyzeText()
 
     def WriteSonnet(self):
+        self.mySonnet = []
         for i in range(self.desiredLines):
             line = []
             followingWord = Word("@")
@@ -62,8 +63,10 @@ class SonnetWriter(object):
                 lineStr += startOfWord.format(numWord, word)
                     
             lineStr += endOfLine
+            if (numLine % 4 == 3):
+                lineStr += endOfLine
             sonnetStr += lineStr.capitalize()
-            
+                
         return sonnetStr
 
     def Print(self, printLineNum=False):

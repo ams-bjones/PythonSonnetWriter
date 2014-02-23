@@ -1,31 +1,29 @@
 import sys
-from Word import WordChain, Word
+from word import wordChain, word
 
 # Analyzes a sample of writing, generates a probabilistic model of which words frequently occur together
 # 	and writes it's own text based on that model. Hopefully, hilarity will insue
 class SonnetWriter(object):
-    def __init__(self):
+    def __init__(self, sonnetFile= None):
         # Desired length of sonnet, in words
         self.desiredLength = 10
         self.desiredLines = 14
         self.wordChain = None
         self.rhymeLevel = 2
-
-    def Initialize(self, sonnetFile):
         self.mySonnet = []
         self.wordChain = None
         self.sonnetFile = sonnetFile
         self.rhymeLines = [-1, -1, 0, 1, -1, -1, 4, 5, -1, -1, 8, 9, -1, 12]
 
-    def AnalyzeText(self):
-        self.wordChain = WordChain(self.sonnetFile)
-        self.wordChain.AnalyzeText()
+    def analyzeText(self):
+        self.wordChain = wordChain(self.sonnetFile)
+        self.wordChain.analyzeText()
 
-    def WriteSonnet(self):
+    def writeSonnet(self):
         self.mySonnet = []
         for i in range(self.desiredLines):
             line = []
-            followingWord = Word("@")
+            followingWord = word("@")
             
             syllables = 0
 
@@ -47,14 +45,14 @@ class SonnetWriter(object):
                 followingWord.GetWordStress()
                 syllables += nextWord.CountSyllables()
                 
-                self.PrintProgress(i+1, syllables)
+                self.printProgress(i+1, syllables)
                 
             self.mySonnet.append(line)
 
-    def PrintProgress(self, line, syllable):
+    def printProgress(self, line, syllable):
         sys.stdout.write ("\rGenerating line [{}] syllable [{}]  ".format(line, syllable))
         
-    def GetPrintableSonnet(self, startOfLine="", startOfWord="{1} ", endOfLine="\n"):
+    def getPrintableSonnet(self, startOfLine="", startOfWord="{1} ", endOfLine="\n"):
         sonnetStr = ""
         for (numLine, line) in enumerate(self.mySonnet):
             lineStr = startOfLine.format(numLine + 1)
@@ -69,7 +67,7 @@ class SonnetWriter(object):
                 
         return sonnetStr
 
-    def Print(self, printLineNum=False):
+    def printSonnet(self, printLineNum=False):
         if (printLineNum):
             print(self.GetPrintableSonnet("[{}]: ", "({}){} ", "\n"))
         else:
